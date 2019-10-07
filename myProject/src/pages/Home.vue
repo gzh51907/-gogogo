@@ -8,7 +8,7 @@
     <!-- <el-button @click="gotos">点击跳转详情页</el-button> -->
     <p class="tit">{{recommed.title}}</p>
     <el-row :gutter="20">
-      <el-col :span="6" v-for="item in recommed.item" :key="item.goods_id" style="height:380px">
+      <el-col :span="6" v-for="item in recommed.item" :key="item.goods_id" style="height:380px" @click.native="goto(item.goods_id)">
         <el-image style="width: 100%;" :src="item.goods_image" fit="contain"></el-image>
         <p class="gName">{{item.goods_name}}</p>
         <p class="price">
@@ -19,7 +19,7 @@
     </el-row>
     <p class="news">{{newClo.title}}</p>
     <el-row :gutter="20">
-      <el-col :span="6" v-for="item in newClo.item" :key="item.goods_id" style="height:380px">
+      <el-col :span="6" v-for="item in newClo.item" :key="item.goods_id" style="height:380px" @click.native="goto(item.goods_id)">
         <el-image style="width: 100%;" :src="item.goods_image" fit="contain"></el-image>
         <p class="gName">{{item.goods_name}}</p>
         <p class="price">
@@ -30,7 +30,7 @@
     </el-row>
     <p class="underwear">{{underWear.title}}</p>
     <el-row :gutter="20">
-      <el-col :span="6" v-for="item in underWear.item" :key="item.goods_id" style="height:380px">
+      <el-col :span="6" v-for="item in underWear.item" :key="item.goods_id" style="height:380px"  @click.native="goto(item.goods_id)">
         <el-image style="width: 100%;" :src="item.goods_image" fit="contain"></el-image>
         <p class="gName">{{item.goods_name}}</p>
         <p class="price">
@@ -41,7 +41,7 @@
     </el-row>
     <p class="shoe">{{manshoe.title}}</p>
     <el-row :gutter="20">
-      <el-col :span="6" v-for="item in manshoe.item" :key="item.goods_id" style="height:380px">
+      <el-col :span="6" v-for="item in manshoe.item" :key="item.goods_id" style="height:380px"  @click.native="goto(item.goods_id)">
         <el-image style="width: 100%;" :src="item.goods_image" fit="contain"></el-image>
         <p class="gName">{{item.goods_name}}</p>
         <p class="price">
@@ -53,7 +53,7 @@
   </div>
 </template>
 <script>
-import axios from "axios"; //引入第三方模块axios
+// import axios from "axios"; //引入第三方模块axios
 export default {
   data() {
     return {
@@ -65,15 +65,17 @@ export default {
     };
   },
   methods: {
-    // gotos() {
-    //   this.$router.push({ name: "goods", params: { id: 12345678 } });
-    // }
+    goto(id) {
+      // this.$router.push( `/goods/${id}`);或者下面的这种方式
+      //现在点击不能跳转，因为点击事件绑在了组件上，不能监听这个点击事件，所以要手动加一个native属性给click
+      this.$router.push({ name: "goods", params: {id}});
+    }
   },
   async created() {
     //发起ajax请求,axios返回的是一个promise对象，
     let {
       data: { datas }
-    } = await axios.get("https://www.nanshig.com/mobile/index.php", {
+    } = await this.$axios.get("https://www.nanshig.com/mobile/index.php", {
       params: {
         act: "index"
       }
@@ -81,7 +83,7 @@ export default {
     //   .then(res => {
     //     console.log("res:" , res);
     //   });
-    console.log(datas);
+    // console.log(datas);
     //轮播图的数据
     this.adlist = datas[0].adv_list.item;
 
